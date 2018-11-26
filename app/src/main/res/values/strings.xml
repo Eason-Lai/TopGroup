@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">storage</string>
+    <string name="title_calendar">日历</string>
+    <string name="title_account">账本</string>
+    <string name="title_storage">空间</string>
+    <string name="title_me">用户</string>
+</resources>
