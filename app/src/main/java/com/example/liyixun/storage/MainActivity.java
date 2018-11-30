@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.view.MenuItem;
@@ -15,6 +17,8 @@ import android.support.v4.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.microedition.khronos.opengles.GL;
 
 import cn.bmob.v3.Bmob;
 
@@ -55,17 +59,12 @@ public class MainActivity extends AppCompatActivity {
         Bmob.initialize(this,"03de14ff4bda451ee3108a1070c21129");
 
         setContentView(R.layout.activity_main);
-        //replaceFragment(new Fragment_storage());
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-       /* loadGallery();
-        GalleryAdapter adapter = new GalleryAdapter(MainActivity.this,R.layout.gallery_item,galleryList);
-        ListView listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(adapter);*/
 
     }
 

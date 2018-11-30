@@ -7,4 +7,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="tab_checked">#ED6A2C</color>
     <color name="tab_unchecked">#757575</color>
+    <color name="tab_fab">#f25758</color>
+
 </resources>
