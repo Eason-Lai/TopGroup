@@ -4,4 +4,7 @@
     <string name="title_account">账本</string>
     <string name="title_storage">空间</string>
     <string name="title_me">用户</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
