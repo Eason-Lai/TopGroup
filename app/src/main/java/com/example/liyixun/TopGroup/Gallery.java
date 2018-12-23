@@ -1,4 +1,4 @@
-package com.example.liyixun.storage;
+package com.example.liyixun.TopGroup;
 
 public class Gallery {
     private String title;

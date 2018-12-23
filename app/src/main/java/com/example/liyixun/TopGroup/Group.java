@@ -1,0 +1,36 @@
+package com.example.liyixun.TopGroup;
+
+import java.util.List;
+
+import cn.bmob.v3.BmobObject;
+
+public class Group extends BmobObject{
+    private String groupname;
+    private List<String> member;
+    private List<String> admin;
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+
+    public List<String> getMember() {
+        return member;
+    }
+
+    public void setMember(List<String> member) {
+        this.member = member;
+    }
+
+
+    public List<String> getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(List<String> admin) {
+        this.admin = admin;
+    }
+}

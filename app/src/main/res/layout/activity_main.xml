@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="com.example.liyixun.TopGroup.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
@@ -42,11 +42,6 @@
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
         app:layout_constrainedHeight="true">
-        <!--<ListView
-            android:id="@+id/list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>-->
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

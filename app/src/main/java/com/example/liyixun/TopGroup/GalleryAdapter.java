@@ -1,34 +1,41 @@
-package com.example.liyixun.storage;
+package com.example.liyixun.TopGroup;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
-import cn.bmob.v3.b.I;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+
+    private Context mcontext;
     private List<Gallery> mGalleryList;
 
     static class  ViewHolder extends RecyclerView.ViewHolder {
         View galleryview;
+        CardView cardView;
         ImageView gallery_image;
         TextView gallery_title;
+        CircleImageView gallery_author_icon;
+        TextView getGallery_author_name;
 
         public ViewHolder(View view) {
             super(view);
-            galleryview = view;
+            cardView = (CardView) view;
             gallery_image = (ImageView) view.findViewById(R.id.gallery_image);
             gallery_title = (TextView) view.findViewById(R.id.gallery_title);
+            gallery_author_icon = (CircleImageView) view.findViewById(R.id.gallery_author_icon);
+            getGallery_author_name = (TextView) view.findViewById(R.id.gallery_author_name);
         }
     }
 
@@ -38,11 +45,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_item,parent,false);
+
+        if ( mcontext == null ) {
+            mcontext = parent.getContext();
+        }
+
+        View view = LayoutInflater.from(mcontext).inflate(R.layout.gallery_item,parent,false);
         final ViewHolder holder = new ViewHolder(view);
 
         //点击
-        holder.galleryview.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
                int position = holder.getAdapterPosition();
@@ -52,7 +64,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         });
 
         //长按
-        holder.galleryview.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 int position = holder.getAdapterPosition();
@@ -68,8 +80,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Gallery gallery = mGalleryList.get(position);
-        holder.gallery_image.setImageResource(gallery.getImageId());
+        //holder.gallery_image.setImageResource(gallery.getImageId());
+        Glide.with(mcontext).load(gallery.getImageId()).into(holder.gallery_image);
         holder.gallery_title.setText(gallery.getTitle());
+        Glide.with(mcontext).load(gallery.getUserimageId()).into(holder.gallery_author_icon);
+        holder.getGallery_author_name.setText(gallery.getAuthor());
     }
 
     @Override

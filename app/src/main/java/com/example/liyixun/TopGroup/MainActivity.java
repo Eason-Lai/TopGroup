@@ -1,24 +1,18 @@
-package com.example.liyixun.storage;
+package com.example.liyixun.TopGroup;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.*;
 import android.support.v4.app.FragmentManager;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.microedition.khronos.opengles.GL;
 
 import cn.bmob.v3.Bmob;
 
@@ -27,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private Toolbar tb;
     private List<Gallery> galleryList = new ArrayList<>();
+    private Fragment_storage fragment_storage;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -41,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                     //mTextMessage.setText(R.string.title_account);
                     return true;
                 case R.id.navigation_storage:
-                    replaceFragment(new Fragment_storage());
+                    replaceFragment(fragment_storage);
                     return true;
                 case R.id.navigation_me:
                     //mTextMessage.setText(R.string.title_me);
@@ -65,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        fragment_storage = new Fragment_storage();
 
     }
 
