@@ -50,5 +50,6 @@
     <string name="newgroup">创建小组</string>
     <string name="ug_btn_new">确认创建</string>
     <string name="ug_edt_new">请输入你要创建的组名</string>
+    <string name="enter">进入小组</string>
 
 </resources>
