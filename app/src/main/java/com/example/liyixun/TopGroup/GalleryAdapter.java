@@ -81,10 +81,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Gallery gallery = mGalleryList.get(position);
         //holder.gallery_image.setImageResource(gallery.getImageId());
-        Glide.with(mcontext).load(gallery.getImageId()).into(holder.gallery_image);
         holder.gallery_title.setText(gallery.getTitle());
-        Glide.with(mcontext).load(gallery.getUserimageId()).into(holder.gallery_author_icon);
         holder.getGallery_author_name.setText(gallery.getAuthor());
+
+        /*Glide.with(mcontext).load(gallery.getImageId()).into(holder.gallery_image);
+        Glide.with(mcontext).load(gallery.getUserimageId()).into(holder.gallery_author_icon);*/
+        Glide.with(mcontext).load(R.drawable.timg_3).into(holder.gallery_image);
+        Glide.with(mcontext).load(R.drawable.timg_5).into(holder.gallery_author_icon);
+
     }
 
     @Override

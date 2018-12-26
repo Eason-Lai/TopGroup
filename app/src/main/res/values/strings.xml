@@ -51,5 +51,6 @@
     <string name="ug_btn_new">确认创建</string>
     <string name="ug_edt_new">请输入你要创建的组名</string>
     <string name="enter">进入小组</string>
+    <string name="set_title">设置标题</string>
 
 </resources>

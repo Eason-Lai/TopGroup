@@ -1,5 +1,6 @@
 package com.example.liyixun.TopGroup;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,18 +43,6 @@ public class UserGroup extends AppCompatActivity {
     private String groupid;
     private List<String> name = new ArrayList<String>();
 
-
-    private Handler handler = new Handler(){
-        public void handleMessage(Message msg){
-            if (msg.what == 1){
-                Group group = (Group) msg.obj;
-                groupid = group.getObjectId();
-                Intent intent = new Intent(UserGroup.this,MainActivity.class);
-                intent.putExtra("groupid",groupid);
-                startActivity(intent);
-            }
-        }
-    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +53,8 @@ public class UserGroup extends AppCompatActivity {
 
         click();
     }
+
+
 
     private void init(){
         Bmob.initialize(this,"03de14ff4bda451ee3108a1070c21129");
@@ -157,10 +148,7 @@ public class UserGroup extends AppCompatActivity {
                     @Override
                     public void done(List<Group> object, BmobException e) {
                         if (e == null) {
-                            Message message = new Message();
-                            message.what = 1;
-                            message.obj = object.get(0).getObjectId();
-                            handler.sendMessage(message);
+                            MainActivity.actionStart(UserGroup.this,object.get(0).getObjectId());
                         } else {
                             Log.e("BMOB", e.toString());
                         }

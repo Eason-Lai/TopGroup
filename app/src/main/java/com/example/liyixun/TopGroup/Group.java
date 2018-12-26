@@ -1,8 +1,11 @@
 package com.example.liyixun.TopGroup;
 
+import android.provider.ContactsContract;
+
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobRelation;
 
 public class Group extends BmobObject{
     private String groupname;
