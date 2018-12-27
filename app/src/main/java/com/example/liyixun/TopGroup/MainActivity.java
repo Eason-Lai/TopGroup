@@ -27,9 +27,9 @@ import cn.bmob.v3.listener.QueryListener;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
+    public List<Gallery> gl = new ArrayList<>();
     private Toolbar tb;
-    private List<Gallery> galleryList = new ArrayList<>();
-    private Fragment_storage fragment_storage;
+    public Fragment_storage fragment_storage;
     private String groupid;
     private User muser;
     private Group mgroup;
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         update_data();
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        fragment_storage = (Fragment_storage) getSupportFragmentManager().findFragmentById(R.id.main_layout);
         tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -4,7 +4,6 @@ package com.example.liyixun.TopGroup;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -30,6 +29,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.scwang.smartrefresh.header.DeliveryHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +60,8 @@ public class Fragment_storage extends Fragment {
     private User muser;
     private RecyclerView recyclerView;
     private Group mgroup;
+    private Boolean isload;
+    private GalleryAdapter adapter;
     private int count;
     public static final int CHOOSE_PHOTO = 2;
     public static final int DOWNLOAD_BMOBFILE = 3;
@@ -70,10 +79,12 @@ public class Fragment_storage extends Fragment {
                     count++;
                     Toast.makeText(activity,String.valueOf(size),Toast.LENGTH_LONG).show();
                     Gallery gallery = (Gallery) msg.getData().getSerializable("gallery");
-                    galleryList.add(gallery);
+                    adapter.mGalleryList.add(gallery);
+                    adapter.notifyItemChanged(adapter.mGalleryList.size());
                     if (count == size)
                         Toast.makeText(activity,"the last one",Toast.LENGTH_LONG).show();
-                        //setGalleryAdapter();
+                        setGalleryAdapter();
+                        isload = false;
                     break;
                 default:
                     break;
@@ -88,8 +99,41 @@ public class Fragment_storage extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycle_view);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        load();
-        //setGalleryAdapter();
+        if (ContextCompat.checkSelfPermission( activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+        galleryList = activity.gl;
+
+        RefreshLayout refreshLayout = (RefreshLayout) view.findViewById(R.id.refreshLayout);
+
+        //设置 Footer 为 球脉冲 样式
+        refreshLayout.setRefreshFooter(new BallPulseFooter(activity).setSpinnerStyle(SpinnerStyle.Scale));
+
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                Log.d("refresh_isload",String.valueOf(isload));
+                if (!isload) load();
+                refreshlayout.finishRefresh(2000,false);//传入false表示刷新失败
+            }
+        });
+
+        isload = false;
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                if (!isload) load();
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+            }
+        });
+
+        adapter = new GalleryAdapter(activity.gl);
+        recyclerView.setAdapter(adapter);
+        if (activity.gl.size() == 0 ) load();
+        else {
+            count = activity.gl.size();
+            //setGalleryAdapter();
+        }
 
 
         //悬浮按钮点击
@@ -121,31 +165,13 @@ public class Fragment_storage extends Fragment {
         mgroup = activity.getMGroup();
         muser = activity.getMuser();
         count=0;
-        //loadGallery();
+
     }
 
-    /*private void loadGallery() {
-        for (int i=1; i<=50; i++) {
-            Gallery p = new Gallery(getRandomLengthName("测试"+i),R.drawable.ic_storage);
-            galleryList.add(p);
-        }
-    }*/
-
-    private void loadGallery() {
-        for (int i=1; i<=3; i++) {
-            Gallery p1 = new Gallery("图片1",R.drawable.timg_2,"user1",R.drawable.timg_2);
-            galleryList.add(p1);
-            Gallery p2 = new Gallery("图片2",R.drawable.timg_3,"user2",R.drawable.timg_2);
-            galleryList.add(p2);
-            Gallery p3 = new Gallery("图片3",R.drawable.timg_4,"user3",R.drawable.timg_2);
-            galleryList.add(p3);
-            Gallery p4 = new Gallery("图片4",R.drawable.timg_5,"user4",R.drawable.timg_2);
-            galleryList.add(p4);
-            Gallery p5 = new Gallery("图片5",R.drawable.timg_6,"user5",R.drawable.timg_2);
-            galleryList.add(p5);
-            Gallery p6 = new Gallery("图片6",R.drawable.timg_7,"user6",R.drawable.timg_2);
-            galleryList.add(p6);
-        }
+    @Override
+    public void onStop() {
+        super.onStop();
+        activity.gl = galleryList;
     }
 
     private String getRandomLengthName(String name) {
@@ -242,8 +268,6 @@ public class Fragment_storage extends Fragment {
                     // 返回的上传进度（百分比）
                 }
             });
-            Gallery p = new Gallery("图片6",R.drawable.timg_7,"user6",R.drawable.timg_2);
-            galleryList.add(p);
         } else {
             Toast.makeText(activity,"failed to get image",Toast.LENGTH_SHORT).show();
         }
@@ -268,7 +292,7 @@ public class Fragment_storage extends Fragment {
         return path;
     }
 
-    private void addstore(BmobFile bmobFile){
+    private void addstore(final BmobFile bmobFile){
         final Store store = new Store();
         store.setGroup(mgroup);
         store.setUser(muser);
@@ -280,7 +304,7 @@ public class Fragment_storage extends Fragment {
                 if (e==null){
                     MyDialog myDialog = new MyDialog(activity,store.getObjectId());
                     myDialog.show();
-                    Toast.makeText(activity,"图片上传成功",Toast.LENGTH_SHORT).show();;
+                    Toast.makeText(activity,"图片上传成功",Toast.LENGTH_SHORT).show();
                     //Log.i("Storage","图片上传成功");
                 } else {
                     Log.e("Storage",e.getMessage());
@@ -289,8 +313,8 @@ public class Fragment_storage extends Fragment {
         });
     }
 
-    private void load(){
-
+    public void load(){
+        isload = true;
         BmobQuery<Store> bmobQuery = new BmobQuery<>();
 
         bmobQuery.addWhereEqualTo("group",new BmobPointer(mgroup));
@@ -300,7 +324,19 @@ public class Fragment_storage extends Fragment {
             @Override
             public void done(final List<Store> object, BmobException e) {
                 if(e==null){
+                    Log.d("load_ojsz",String.valueOf(object.size()));
+                    Log.d("load_count",String.valueOf(count));
+                    //Toast.makeText(activity,String.valueOf(object.size())+String.valueOf(count),Toast.LENGTH_LONG).show();
+                    if (object.size() <= count) {
+                        isload = false;
+                        return;
+                    }
+                    int i=0;
                     for (final Store store : object) {
+                        i++;
+                        Log.d("load_i",String.valueOf(i));
+
+                        if ( i<= count ) continue;
                         BmobFile bmobfile = store.getBfile();
                         if(bmobfile!= null){
                             //调用bmobfile.download方法
@@ -335,7 +371,7 @@ public class Fragment_storage extends Fragment {
     }
 
     private void setGalleryAdapter(){
-        GalleryAdapter adapter = new GalleryAdapter(galleryList);
-        recyclerView.setAdapter(adapter);
+        //adapter.notifyDataSetChanged();
+        activity.gl = adapter.mGalleryList;
     }
 }

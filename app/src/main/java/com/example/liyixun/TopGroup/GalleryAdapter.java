@@ -1,6 +1,8 @@
 package com.example.liyixun.TopGroup;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
     private Context mcontext;
-    private List<Gallery> mGalleryList;
+    public List<Gallery> mGalleryList;
 
     static class  ViewHolder extends RecyclerView.ViewHolder {
         View galleryview;
@@ -53,7 +55,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         View view = LayoutInflater.from(mcontext).inflate(R.layout.gallery_item,parent,false);
         final ViewHolder holder = new ViewHolder(view);
 
-        //点击
+        /*//点击
         holder.cardView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -72,8 +74,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 Toast.makeText(v.getContext(),"you longclicked image" + gallery.getTitle(),Toast.LENGTH_LONG).show();
                 return true;
             }
-        });
+        });*/
 
+
+        //点击
+        holder.gallery_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                Gallery gallery = mGalleryList.get(position);
+                new PhotoDialog(v.getContext(),gallery.getImage()).show();
+            }
+        });
         return holder;
     }
 
@@ -86,7 +98,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         /*Glide.with(mcontext).load(gallery.getImageId()).into(holder.gallery_image);
         Glide.with(mcontext).load(gallery.getUserimageId()).into(holder.gallery_author_icon);*/
-        Glide.with(mcontext).load(R.drawable.timg_3).into(holder.gallery_image);
+        Drawable drawable=new BitmapDrawable(gallery.getImage());
+        Glide.with(mcontext).load(drawable).into(holder.gallery_image);
+
+        //holder.gallery_image.setImageBitmap(gallery.getImage());
+        //Glide.with(mcontext).load(gallery.getImage()).into(holder.gallery_image);
         Glide.with(mcontext).load(R.drawable.timg_5).into(holder.gallery_author_icon);
 
     }
