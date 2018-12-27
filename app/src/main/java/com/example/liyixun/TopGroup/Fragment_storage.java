@@ -75,14 +75,15 @@ public class Fragment_storage extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case DOWNLOAD_BMOBFILE:
+                    isload = true;
                     int size = msg.arg1;
                     count++;
-                    Toast.makeText(activity,String.valueOf(size),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(activity,String.valueOf(size),Toast.LENGTH_LONG).show();
                     Gallery gallery = (Gallery) msg.getData().getSerializable("gallery");
                     adapter.mGalleryList.add(gallery);
                     adapter.notifyItemChanged(adapter.mGalleryList.size());
                     if (count == size)
-                        Toast.makeText(activity,"the last one",Toast.LENGTH_LONG).show();
+                        //Toast.makeText(activity,"the last one",Toast.LENGTH_LONG).show();
                         setGalleryAdapter();
                         isload = false;
                     break;
@@ -151,11 +152,6 @@ public class Fragment_storage extends Fragment {
         return view;
     }
 
-    private void openAlbum() {
-        Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType("image/*");
-        startActivityForResult(intent,CHOOSE_PHOTO);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -184,6 +180,11 @@ public class Fragment_storage extends Fragment {
         return builder.toString();
     }
 
+    private void openAlbum() {
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+        startActivityForResult(intent,CHOOSE_PHOTO);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -327,7 +328,7 @@ public class Fragment_storage extends Fragment {
                     Log.d("load_ojsz",String.valueOf(object.size()));
                     Log.d("load_count",String.valueOf(count));
                     //Toast.makeText(activity,String.valueOf(object.size())+String.valueOf(count),Toast.LENGTH_LONG).show();
-                    if (object.size() <= count) {
+                    if (object.size() < count) {
                         isload = false;
                         return;
                     }

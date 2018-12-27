@@ -1,15 +1,20 @@
 package com.example.liyixun.TopGroup;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class Fragment_account extends AppCompatActivity {
+public class Fragment_account extends Fragment {
 
     private LinearLayout ll_RG;
     private RelativeLayout rl;
@@ -17,28 +22,38 @@ public class Fragment_account extends AppCompatActivity {
     private Button btn_spend;
     private TextView tv_income;
     private TextView tv_spend;
+    private MainActivity activity;
+    private Fragment_income fragment_income;
+    private Fragment_spend fragment_spend;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //初始化主界面
-        init();
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_account, container, false);
+        init(view);
+        return view;
     }
 
-    private void init() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //初始化主界面
+
+    }
+
+    private void init(View view) {
         //设置背景颜色
-        rl =(RelativeLayout)findViewById(R.id.rl);
+        rl =(RelativeLayout) view.findViewById(R.id.rl);
         rl.setBackgroundColor(0xffFFC0CB);
-        ll_RG =(LinearLayout) findViewById(R.id.ll_RG);
+        ll_RG =(LinearLayout) view.findViewById(R.id.ll_RG);
         //收入按钮
-        btn_income =(Button) findViewById(R.id.btn_income);
+        btn_income =(Button) view.findViewById(R.id.btn_income);
         //支出按钮
-        btn_spend =(Button)findViewById(R.id.btn_spend);
+        btn_spend =(Button)view.findViewById(R.id.btn_spend);
         //显示收入
-        tv_income =(TextView) findViewById(R.id.tv_income);
+        tv_income =(TextView) view.findViewById(R.id.tv_income);
         //显示支出
-        tv_spend =(TextView) findViewById(R.id.tv_spend);
+        tv_spend =(TextView) view.findViewById(R.id.tv_spend);
 
         //进入收入界面
         btn_income.setOnClickListener(new View.OnClickListener() {
@@ -59,13 +74,13 @@ public class Fragment_account extends AppCompatActivity {
     }
 
     private void activity_spend() {
-        Intent intent=new Intent(this,Activity_spend.class);
-        startActivity(intent);
+        fragment_spend = new Fragment_spend();
+        activity.replaceFragment(fragment_spend);
     }
 
     private void activity_income() {
-        Intent intent=new Intent(this,Activity_income.class);
-        startActivity(intent);
+        fragment_income = new Fragment_income();
+        activity.replaceFragment(fragment_income);
     }
 
 

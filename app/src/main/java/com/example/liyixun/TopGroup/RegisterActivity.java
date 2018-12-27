@@ -177,7 +177,6 @@ public class RegisterActivity extends AppCompatActivity{
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String nickname = r_nickname.getText().toString();
-                    if (!hasFocus) {
                         if (nickname.length() > 10 || nickname.length() == 0 ) {
                             r_nickname.setCompoundDrawablesRelativeWithIntrinsicBounds(null,null,wrong,null);
                             bool_nn = false;
@@ -209,8 +208,6 @@ public class RegisterActivity extends AppCompatActivity{
                                 }
                             });
                         }
-
-                    }
                 }
             }
         });

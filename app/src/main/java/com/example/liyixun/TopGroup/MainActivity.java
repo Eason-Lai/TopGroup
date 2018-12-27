@@ -3,6 +3,8 @@ package com.example.liyixun.TopGroup;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,10 @@ import android.support.v4.app.*;
 import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
+
+import com.example.liyixun.TopGroup.Calendar.BoomSQL;
+import com.example.liyixun.TopGroup.Calendar.Fragment_calendar;
+import com.example.liyixun.TopGroup.personpage.Fragment_person;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +36,30 @@ public class MainActivity extends AppCompatActivity {
     public List<Gallery> gl = new ArrayList<>();
     private Toolbar tb;
     public Fragment_storage fragment_storage;
+    public Fragment_calendar fragment_calendar;
+    public Fragment_account fragment_account;
+    public Fragment_person fragment_person;
     private String groupid;
     private User muser;
     private Group mgroup;
+    private static final int GET_GROUP = 11;
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case GET_GROUP:
+                    Group group = (Group) msg.getData().getSerializable("group");
+                    mgroup = group;
+                    BoomSQL.setGroup(group);
+                    Log.e("MainActivity",mgroup.getGroupname());
+                    fragment_calendar = new Fragment_calendar();
+                    replaceFragment(fragment_calendar);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -41,9 +68,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_calendar:
+                    fragment_calendar = new Fragment_calendar();
+                    replaceFragment(fragment_calendar);
                     //mTextMessage.setText(R.string.title_calendar);
                     return true;
                 case R.id.navigation_account:
+                    fragment_account = new Fragment_account();
+                    replaceFragment(fragment_account);
                     //mTextMessage.setText(R.string.title_account);
                     return true;
                 case R.id.navigation_storage:
@@ -51,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
                     replaceFragment(fragment_storage);
                     return true;
                 case R.id.navigation_me:
+                    fragment_person = new Fragment_person();
+                    replaceFragment(fragment_person);
                     //mTextMessage.setText(R.string.title_me);
                     return true;
             }
@@ -65,14 +98,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Bmob.initialize(this,"03de14ff4bda451ee3108a1070c21129");
         setContentView(R.layout.activity_main);
-
         init();
 
 
     }
 
 
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager  = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_layout,fragment);
@@ -87,11 +119,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void init(){
+
         groupid = getIntent().getStringExtra("groupid");
         update_data();
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        fragment_storage = (Fragment_storage) getSupportFragmentManager().findFragmentById(R.id.main_layout);
         tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -105,7 +137,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(Group group, BmobException e) {
                 if (e==null){
-                    mgroup = group;
+                   Message message = new Message();
+                   message.what = GET_GROUP;
+                   Bundle bundle = new Bundle();
+                    bundle.putSerializable("group",group);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
+                   Log.e("MainActivity",group.getGroupname());
                 } else {
                     Log.e("MainActivity",e.getMessage());
                 }
