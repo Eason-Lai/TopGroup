@@ -104,7 +104,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         //holder.gallery_image.setImageBitmap(gallery.getImage());
         //Glide.with(mcontext).load(gallery.getImage()).into(holder.gallery_image);
         Glide.with(mcontext).load(R.drawable.timg_5).into(holder.gallery_author_icon);
-
     }
 
     @Override

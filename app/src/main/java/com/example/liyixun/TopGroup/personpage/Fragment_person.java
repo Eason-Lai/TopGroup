@@ -79,8 +79,8 @@ public class Fragment_person extends Fragment implements View.OnClickListener{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_person, container, false);
-        Toolbar toolbar=(Toolbar) view.findViewById(R.id.me_toolbar);
-        CollapsingToolbarLayout collapsingToolbarLayout=(CollapsingToolbarLayout) view.findViewById(R.id.collasping_toobar);
+        //Toolbar toolbar=(Toolbar) view.findViewById(R.id.me_toolbar);
+        //CollapsingToolbarLayout collapsingToolbarLayout=(CollapsingToolbarLayout) view.findViewById(R.id.collasping_toobar);
         UserName=(TextView) view.findViewById(R.id.me_username);
         GroupName=(TextView) view.findViewById(R.id.nowGroup);
         GroupNumber=(TextView) view.findViewById(R.id.value_groupnumber);
@@ -93,8 +93,8 @@ public class Fragment_person extends Fragment implements View.OnClickListener{
         switch_group=(Button) view.findViewById(R.id.me_SwitchGroup);
         quit=(Button) view.findViewById(R.id.quit);
         //setHasOptionsMenu(true);
-        activity.setSupportActionBar(toolbar);
-        ActionBar actionBar=activity.getSupportActionBar();
+        //activity.setSupportActionBar(toolbar);
+        //ActionBar actionBar=activity.getSupportActionBar();
         meImage.setOnClickListener(this);
         add_group.setOnClickListener(this);
         invite_person.setOnClickListener(this);
@@ -110,7 +110,7 @@ public class Fragment_person extends Fragment implements View.OnClickListener{
             group = BoomSQL.getGroup();
             initName_Group(user.getNickname(),group.getGroupname());
             initCalendarNumber(group.getGroupname());
-            initGroupNumber(user.getNickname());
+            initGroupNumber(group.getGroupname());
         }
 
         if (user.getAvatar() != null ) {

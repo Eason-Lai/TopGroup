@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.liyixun.TopGroup.MainActivity;
 import com.example.liyixun.TopGroup.R;
+import com.example.liyixun.TopGroup.User;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -51,6 +52,8 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobSMS;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -107,15 +110,19 @@ public class Myfragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
-        groupname = activity.getMGroup().getGroupname();
-        username = activity.getMuser().getNickname();
+        if (BoomSQL.getGroup() == null){
+            groupname = null;
+        } else {
+            groupname =BoomSQL.getGroup().getGroupname();
+        }
+        username = BmobUser.getCurrentUser(User.class).getNickname();
 
         if (getArguments() != null)
             layoutRes = getArguments().getInt(LAYOUT_RES, R.layout.fragment_calendar);
 
         mutableBookings = new ArrayList<>();
         EventBus.getDefault().register(this);
-        initData(groupname);
+        if (groupname != null) initData(groupname);
     }
 
     @Override
@@ -162,6 +169,7 @@ public class Myfragment extends Fragment{
                         Fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                    if (groupname == null) return;
                                      //MainActivity activity = (MainActivity) getActivity();
                                      Intent intent=new Intent(BoomSQL.getContext(),AddEvent.class);
                                      intent.putExtra("date",dateClicked.getTime());
@@ -232,9 +240,11 @@ public class Myfragment extends Fragment{
             public void done(List<com.example.liyixun.TopGroup.Calendar.Calendar> list, BmobException e) {
                 if(e==null) {
                     //Toast.makeText(BoomSQL.getContext(), "查询成功：共" + list.size() + "条数据。", Toast.LENGTH_SHORT).show();
+                    showlist.clear();
                     for (com.example.liyixun.TopGroup.Calendar.Calendar gameScore : list) {
 
                         Event event = new Event(gameScore.getcolor(), gameScore.getTimeInMillis(), gameScore.getData());
+
                         showlist.put(event, gameScore.getUserName());
                     }
                     //初始化事件

@@ -58,6 +58,7 @@ public class sgDialog extends Dialog {
                     BoomSQL.setGroup(mgroup);
                     Intent intent = new Intent(context,MainActivity.class);
                     context.startActivity(intent);
+
                     break;
                 default:
                     break;

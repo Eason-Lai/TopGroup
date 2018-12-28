@@ -82,8 +82,11 @@ public class LoginActivity extends AppCompatActivity{
                     editor.putString("password",edt_password.getText().toString());
                     editor.apply();
 
-                    Intent intent = new Intent(LoginActivity.this,UserGroup.class);
+                    /*Intent intent = new Intent(LoginActivity.this,UserGroup.class);
                     intent.putExtra("userid",bmobUser.getObjectId());
+                    startActivity(intent);*/
+                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    //intent.putExtra("userid",bmobUser.getObjectId());
                     startActivity(intent);
                 } else {
                     Snackbar.make(view, "登录失败：" + e.getMessage(), Snackbar.LENGTH_LONG).show();

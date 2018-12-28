@@ -1,8 +1,10 @@
 package com.example.liyixun.TopGroup;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -13,8 +15,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class Fragment_spend extends Fragment{
+import com.example.liyixun.TopGroup.Calendar.BoomSQL;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
+
+public class Fragment_spend extends Fragment implements View.OnClickListener{
 
     private RelativeLayout r2;
     private Button btn_cancle_spend;
@@ -29,6 +38,7 @@ public class Fragment_spend extends Fragment{
     private ImageView iv_fruit_spend;
     private ImageView iv_snacks_spend;
     private ImageView iv_tel_spend;
+    private MainActivity activity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +75,90 @@ public class Fragment_spend extends Fragment{
         iv_drug_spend =(ImageView) view.findViewById(R.id.iv_drug);               //药品支出
         iv_fruit_spend =(ImageView) view.findViewById(R.id.iv_fruit);             //水果支出
         iv_snacks_spend =(ImageView) view.findViewById(R.id.iv_snacks);           //零食支出
-        iv_tel_spend =(ImageView) view.findViewById(R.id.iv_telephone);           //话费支出
+        iv_tel_spend =(ImageView) view.findViewById(R.id.iv_telephone);//话费支出
+
+        iv_other_spend.setOnClickListener(this);
+        iv_food_spend.setOnClickListener(this);
+        iv_traffic_spend.setOnClickListener(this);
+        iv_drug_spend.setOnClickListener(this);
+        iv_fruit_spend.setOnClickListener(this);
+        iv_snacks_spend.setOnClickListener(this);
+        iv_tel_spend.setOnClickListener(this);
+        btn_submit_spend.setOnClickListener(this);
+        btn_cancle_spend.setOnClickListener(this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.iv_other_spend:{
+                iv_type_spend.setBackground(iv_other_spend.getBackground());
+                tv_type_spend.setText("其它");
+                break;
+            }
+            case R.id.iv_food:{
+                iv_type_spend.setBackground(iv_food_spend.getBackground());
+                tv_type_spend.setText("餐饮");
+                break;
+            }case R.id.iv_traffic:{
+                iv_type_spend.setBackground(iv_traffic_spend.getBackground());
+                tv_type_spend.setText("交通");
+                break;
+            }case R.id.iv_drug:{
+                iv_type_spend.setBackground(iv_drug_spend.getBackground());
+                tv_type_spend.setText("药品");
+                break;
+            }case R.id.iv_fruit:{
+                iv_type_spend.setBackground(iv_fruit_spend.getBackground());
+                tv_type_spend.setText("水果");
+                break;
+            }case R.id.iv_snacks:{
+                iv_type_spend.setBackground(iv_snacks_spend.getBackground());
+                tv_type_spend.setText("零食");
+                break;
+            }case R.id.iv_telephone:{
+                iv_type_spend.setBackground(iv_snacks_spend.getBackground());
+                tv_type_spend.setText("话费");
+                break;
+            }
+
+            case R.id.btn_cancel_spend:{
+                activity = (MainActivity) getActivity();
+                //activity.removeFragment(this);
+                Fragment_account fragment_account = new Fragment_account();
+                activity.replaceFragment(fragment_account);
+                break;
+            }
+
+            case R.id.btn_submit_spend:{
+                activity = (MainActivity) getActivity();
+                Group mgroup = BoomSQL.getGroup();
+                User muser = BmobUser.getCurrentUser(User.class);
+                String type = "支出";
+                String detail = tv_type_spend.getText().toString();
+                Integer num = Integer.valueOf(et_type_spend.getText().toString());
+                Account account = new Account();
+                account.setGroup(mgroup);
+                account.setUser(muser);
+                account.setType(type);
+                account.setDetail(detail);
+                account.setNum(num);
+                account.save(new SaveListener<String>() {
+                    @Override
+                    public void done(String s, BmobException e) {
+                        if (e==null){
+                            activity = (MainActivity) getActivity();
+                            Fragment_account fragment_account = new Fragment_account();
+                            activity.replaceFragment(fragment_account);
+                            Toast.makeText(getContext(),"发送成功",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getContext(),"发送失败",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                break;
+            }
+        }
     }
 }

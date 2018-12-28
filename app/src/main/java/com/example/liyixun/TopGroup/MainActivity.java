@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 case GET_GROUP:
                     Group group = (Group) msg.getData().getSerializable("group");
                     mgroup = group;
+                    groupid = mgroup.getObjectId();
                     BoomSQL.setGroup(group);
                     Log.e("MainActivity",mgroup.getGroupname());
                     fragment_calendar = new Fragment_calendar();
@@ -111,6 +112,21 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    public void replaceFragment2(Fragment fragment) {
+        FragmentManager fragmentManager  = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main_layout,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void removeFragment(Fragment fragment) {
+        FragmentManager fragmentManager  = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.remove(fragment);
+        transaction.commit();
+    }
+
     public static void actionStart(Context context, String id){
          Intent intent = new Intent(context,MainActivity.class);
          intent.putExtra("groupid",id);
@@ -120,14 +136,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void init(){
 
-        groupid = getIntent().getStringExtra("groupid");
-        update_data();
+        //groupid = getIntent().getStringExtra("groupid");
+        if (BoomSQL.getGroup() == null) {
+            groupid = null;
+            fragment_calendar = new Fragment_calendar();
+            replaceFragment(fragment_calendar);
+        } else {
+            mgroup = BoomSQL.getGroup();
+            groupid = mgroup.getObjectId();
+            update_data();
+        }
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        Toast.makeText(MainActivity.this,groupid,Toast.LENGTH_LONG).show();
+        if (groupid == null ){
+            Toast.makeText(MainActivity.this,"请到个人界面选择小组",Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void update_data() {
